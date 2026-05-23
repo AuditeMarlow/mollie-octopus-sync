@@ -7,6 +7,12 @@ entries are derived from [Conventional Commits](https://www.conventionalcommits.
 on each release.
 
 <!-- knope-anchor -->
+## 0.0.4 (2026-05-23)
+
+### Fixes
+
+- enable createUpdaterArtifacts so latest.json gets generated
+
 ## 0.0.3 (2026-05-23)
 
 ### Features
