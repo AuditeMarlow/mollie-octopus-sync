@@ -26,7 +26,7 @@ dirs = "6"
 chrono = { version = "0.4", features = ["serde"] }
 
 [target.'cfg(windows)'.dependencies]
-keyring = "3"
+keyring = "4"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]
