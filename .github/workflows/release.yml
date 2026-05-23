@@ -39,4 +39,21 @@ jobs:
       - name: Run release workflow
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: knope release
+        # knope's PrepareRelease step exits with code 1 (error
+        # `releases::no_release`) when no commit since the last tag is
+        # release-worthy — chore/docs/style/refactor/test/ci all trip this.
+        # We treat that exit specifically as "no work to do" rather than a
+        # red X, since the job is genuinely allowed to be a no-op.
+        run: |
+          set +e
+          output=$(knope release 2>&1)
+          code=$?
+          echo "$output"
+          if [ $code -eq 0 ]; then
+            exit 0
+          fi
+          if echo "$output" | grep -q "releases::no_release"; then
+            echo "::notice::No release-worthy commits since last tag; skipping."
+            exit 0
+          fi
+          exit $code

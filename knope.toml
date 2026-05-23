@@ -19,7 +19,9 @@ changelog = "CHANGELOG.md"
 name = "release"
 
 # Bumps versions in `versioned_files`, prepends a section to CHANGELOG.md,
-# stages the changes. Exits cleanly (no-op) if there's nothing to release.
+# stages the changes. Exits with `releases::no_release` (code 1) when no
+# commit since the last tag warrants a release; release.yml catches that
+# specific error and treats the job as a successful no-op.
 [[workflows.steps]]
 type = "PrepareRelease"
 

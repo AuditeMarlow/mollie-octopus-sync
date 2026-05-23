@@ -6,3 +6,10 @@ src-tauri/icons
 CHANGELOG.md
 package-lock.json
 *.svg
+
+# Knope owns the formatting of these on every release (it rewrites the
+# version field with its own JSON serializer). Prettier's trailing-newline
+# requirement and short-array collapsing fight knope's output, so we keep
+# them out of Prettier's purview entirely.
+package.json
+src-tauri/tauri.conf.json
