@@ -46,6 +46,14 @@ jobs:
       - uses: knope-dev/action@v2.1.2
         with:
           version: 0.21.0
+          # knope-dev/action exports its `github-token` input as the
+          # GH_TOKEN env var that knope itself reads when calling the
+          # GitHub API. Default is github.token (the workflow's
+          # GITHUB_TOKEN), which creates the release but doesn't fire
+          # downstream workflows (anti-recursion). Passing the PAT
+          # here is what makes release.created actually trigger
+          # build.yml.
+          github-token: ${{ secrets.RELEASE_PAT }}
 
       - name: Run release workflow
         env:

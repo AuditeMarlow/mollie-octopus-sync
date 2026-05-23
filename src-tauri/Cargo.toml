@@ -26,7 +26,13 @@ dirs = "6"
 chrono = { version = "0.4", features = ["serde"] }
 
 [target.'cfg(windows)'.dependencies]
-keyring = "4"
+# Pinned to v3 deliberately. Upstream's v4 README says "do _not_ update";
+# the v4 line is now just sample code, with the real library extracted
+# into the `keyring-core` crate plus per-platform backends. Migrating
+# means a non-trivial rewrite we can't fully test from a non-Windows
+# dev machine. Dependabot is told to skip major-version bumps on this
+# dep in .github/dependabot.yml.
+keyring = "3"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]

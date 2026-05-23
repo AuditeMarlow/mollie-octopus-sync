@@ -13,6 +13,12 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # keyring v4 is "sample code only" per the upstream README — the real
+      # library lives in `keyring-core` + backend crates now. Migrating is
+      # a real rewrite we don't want forced on us by a dependabot PR.
+      - dependency-name: "keyring"
+        update-types: ["version-update:semver-major"]
 
   # CI actions (checkout, setup-node, tauri-action, rust-toolchain, rust-cache).
   - package-ecosystem: github-actions
