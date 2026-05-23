@@ -13,7 +13,7 @@ jobs:
     name: Frontend (Vitest)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -25,7 +25,7 @@ jobs:
     name: Rust (cargo test)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install system deps for Tauri
         # The Tauri lib crate transitively depends on these even though our
