@@ -1,0 +1,54 @@
+# Knope drives semver bumps + CHANGELOG entries from conventional commits.
+# https://knope.tech/reference/config-file/
+#
+# `versioned_files` are kept in lockstep. Knope understands each format natively
+# (package.json, Cargo.toml, tauri.conf.json) — no regex glue required.
+
+[package]
+versioned_files = [
+    "package.json",
+    "src-tauri/Cargo.toml",
+    "src-tauri/tauri.conf.json",
+]
+changelog = "CHANGELOG.md"
+
+# Optional: tell knope which conventional types it should treat as features /
+# fixes / chores. Defaults are sensible; we lean on them.
+
+[[workflows]]
+name = "release"
+
+# Bumps versions in `versioned_files`, prepends a section to CHANGELOG.md,
+# stages the changes. Exits cleanly (no-op) if there's nothing to release.
+[[workflows.steps]]
+type = "PrepareRelease"
+
+# Commit the release artifacts. `{{ version }}` is the new semver chosen by
+# PrepareRelease.
+[[workflows.steps]]
+type = "Command"
+command = "git commit -m \"chore: release {{ version }}\""
+
+# Push the commit + the tag knope is about to create.
+[[workflows.steps]]
+type = "Command"
+command = "git push"
+
+# Create the GitHub release. tauri-action picks this up on `release.created`
+# and uploads the signed installers + latest.json as assets.
+[[workflows.steps]]
+type = "Release"
+
+[github]
+owner = "AuditeMarlow"
+repo = "mollie-octopus-sync"
+
+# Dry-run workflow you can invoke locally to preview the next bump:
+#   knope --dry-run release
+[[workflows]]
+name = "preview-release"
+[[workflows.steps]]
+type = "PrepareRelease"
+[[workflows.steps]]
+type = "Command"
+command = "git diff --stat"

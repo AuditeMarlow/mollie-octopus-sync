@@ -1,0 +1,22 @@
+version: 2
+updates:
+  # Frontend deps + tooling (React, Vite, ESLint, Prettier, Vitest, Tauri JS APIs).
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # Rust deps for the Tauri shell (tauri, plugins, keyring, reqwest transitively).
+  - package-ecosystem: cargo
+    directory: "/src-tauri"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # CI actions (checkout, setup-node, tauri-action, rust-toolchain, rust-cache).
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3

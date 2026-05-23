@@ -1,0 +1,33 @@
+[package]
+name = "mollie-octopus-sync"
+version = "0.0.0"
+description = "Mollie -> EmailOctopus contact sync"
+authors = ["AuditeMarlow"]
+edition = "2021"
+
+[lib]
+name = "mollie_octopus_sync_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-http = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "5"
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1"
+
+[target.'cfg(windows)'.dependencies]
+keyring = "3"
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]

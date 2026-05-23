@@ -1,0 +1,42 @@
+name: Release
+
+# Runs on every push to main. Knope decides if there's anything to release
+# (no-op when there are no `feat:` / `fix:` / breaking commits since the last
+# tag). When there is, it bumps versions, updates CHANGELOG.md, commits,
+# tags, and creates the GitHub release — which then triggers `build.yml`.
+
+on:
+  push:
+    branches: [main]
+
+# Don't run two releases in parallel. The `cancel-in-progress: false` keeps
+# the in-flight one going so we don't end up with a half-applied tag.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # knope needs full history to read prior tags + commits
+          persist-credentials: true
+
+      - name: Configure git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - uses: knope-dev/action@v2.1.0
+        with:
+          version: 0.21.0
+
+      - name: Run release workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: knope release
