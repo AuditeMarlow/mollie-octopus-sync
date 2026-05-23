@@ -1,12 +1,26 @@
 name: Build installers
 
-# When knope creates a GitHub release, build the Tauri installers for each
-# platform in the matrix and upload them (plus the updater `latest.json`)
-# as assets on that release.
+# Builds the Tauri installers for each platform in the matrix and uploads
+# them (plus the updater `latest.json`) onto an existing GitHub release.
+#
+# Primary trigger is `release: created` — knope creates the release in
+# release.yml using a PAT (not GITHUB_TOKEN), so the resulting event fires
+# under a user identity and downstream workflows trigger normally.
+#
+# `workflow_dispatch` is kept as a manual fallback for ad-hoc rebuilds
+# (e.g. a transient build failure you want to retry without re-releasing).
+# The `tag` input names which release to attach to; the source for that
+# tag is checked out and built.
 
 on:
   release:
     types: [created]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Git tag of the release to build for (e.g. v0.0.1)
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -23,6 +37,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          # On `release: created`, github.ref is already the tag. On
+          # `workflow_dispatch`, github.ref is the dispatching branch
+          # (main), so we explicitly check out the tag the caller named.
+          ref: ${{ inputs.tag || github.ref }}
 
       - uses: actions/setup-node@v6
         with:
@@ -50,8 +69,10 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          # Attach to the release that triggered this workflow.
-          releaseId: ${{ github.event.release.id }}
+          # Identifies the release by tag. tauri-action looks the release
+          # up by tag whether we got there from a release event or a
+          # workflow_dispatch invocation.
+          tagName: ${{ inputs.tag || github.event.release.tag_name }}
           # Generate the updater manifest (`latest.json`) and upload it too.
           includeUpdaterJson: true
           args: --target ${{ matrix.rust-target }}
