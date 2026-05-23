@@ -41,7 +41,7 @@
     ],
     "category": "Productivity",
     "shortDescription": "Sync Mollie payments into an EmailOctopus list",
-    "longDescription": "A lightweight Windows app that pulls successful Mollie payments and upserts contacts into a selected EmailOctopus list. Designed for Peggy Pay merchants whose payments are processed through Mollie.",
+    "longDescription": "A lightweight Windows app that pulls Mollie payments and upserts contacts into a selected EmailOctopus list. Designed for Peggy Pay merchants whose payments are processed through Mollie.",
     "windows": {
       "wix": {
         "language": [
