@@ -7,6 +7,16 @@ entries are derived from [Conventional Commits](https://www.conventionalcommits.
 on each release.
 
 <!-- knope-anchor -->
+## 0.0.2 (2026-05-23)
+
+### Features
+
+- initial release of mollie-octopus-sync
+
+### Fixes
+
+- drop "successful" from the Windows bundle longDescription
+
 ## 0.0.1 (2026-05-23)
 
 ### Features
