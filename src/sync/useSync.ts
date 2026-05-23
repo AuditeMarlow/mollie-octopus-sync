@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { runSync } from "./engine";
 import { getCredentials, saveConfig } from "../lib/tauri";
 import type { AppConfig, SyncProgress } from "../types";
@@ -32,13 +32,18 @@ export function useSync(
 
   // Latest config/hasCredentials live in refs so the `start` callback stays
   // stable. Otherwise every config save would re-create `start`, which would
-  // tear down the periodic timer in App.tsx that depends on it.
+  // tear down the periodic timer in App.tsx that depends on it. The sync
+  // happens in an effect rather than inline so we don't write to refs during
+  // render — that's what react-hooks/refs flags (assignments-during-render
+  // can run multiple times under concurrent rendering and surprise readers).
   const cfgRef = useRef(config);
-  cfgRef.current = config;
   const hasCredsRef = useRef(hasCredentials);
-  hasCredsRef.current = hasCredentials;
   const onCfgRef = useRef(onConfigChange);
-  onCfgRef.current = onConfigChange;
+  useEffect(() => {
+    cfgRef.current = config;
+    hasCredsRef.current = hasCredentials;
+    onCfgRef.current = onConfigChange;
+  }, [config, hasCredentials, onConfigChange]);
 
   const start = useCallback(async (opts?: StartOptions) => {
     if (runningRef.current) return;
