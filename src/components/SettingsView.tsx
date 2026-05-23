@@ -55,10 +55,12 @@ export function SettingsView({ config, onSaved, onReset, onClose }: Props) {
   useEffect(() => {
     // Populate the list dropdown using the typed EO key if present, otherwise
     // briefly load the saved one. The key only lives as a local `apiKey` here;
-    // it's not stored in component state.
+    // it's not stored in component state. setLoadingLists fires from inside
+    // the async IIFE rather than at the top of the effect body so that
+    // react-hooks/set-state-in-effect doesn't flag it as cascading renders.
     let cancelled = false;
-    setLoadingLists(true);
     (async () => {
+      setLoadingLists(true);
       try {
         const apiKey =
           eoKey || (await getCredentials()).emailoctopus_api_key || "";
