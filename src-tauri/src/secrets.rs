@@ -127,8 +127,8 @@ mod backend {
         // backend already has this behaviour structurally.
         let mut current = load_existing(&p);
         super::apply_patch(&mut current, patch);
-        let raw = serde_json::to_string(&current)
-            .map_err(|e| format!("serialize credentials: {e}"))?;
+        let raw =
+            serde_json::to_string(&current).map_err(|e| format!("serialize credentials: {e}"))?;
         write_atomic_restricted(&p, raw.as_bytes())
     }
 
@@ -173,8 +173,7 @@ mod backend {
             // survive the rename.
             f.sync_all().ok();
         }
-        fs::rename(&tmp, path)
-            .map_err(|e| format!("rename {tmp:?} -> {path:?}: {e}"))
+        fs::rename(&tmp, path).map_err(|e| format!("rename {tmp:?} -> {path:?}: {e}"))
     }
 
     // Non-unix non-windows fallback (e.g. wasm targets). No perms model to

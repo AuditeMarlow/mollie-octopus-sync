@@ -23,11 +23,13 @@ name = "release"
 [[workflows.steps]]
 type = "PrepareRelease"
 
-# Commit the release artifacts. `{{ version }}` is the new semver chosen by
-# PrepareRelease.
+# Commit the release artifacts. Knope's Command step does plain substring
+# replacement (not handlebars), so the placeholder is a literal token
+# declared in `variables` and matched verbatim in `command`.
 [[workflows.steps]]
 type = "Command"
-command = "git commit -m \"chore: release {{ version }}\""
+command = "git commit -m \"chore: release VERSION\""
+variables = { "VERSION" = "Version" }
 
 # Push the commit + the tag knope is about to create.
 [[workflows.steps]]
