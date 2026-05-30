@@ -184,6 +184,7 @@ export function App() {
               setScreen("setup");
             }}
             onClose={() => setScreen("main")}
+            onUpdateFound={setAvailableUpdate}
           />
         )}
       </div>

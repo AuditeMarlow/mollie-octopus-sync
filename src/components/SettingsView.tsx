@@ -18,7 +18,7 @@ import {
   saveConfig,
   setCredentials,
 } from "../lib/tauri";
-import { checkForUpdate } from "../lib/updater";
+import { checkForUpdate, type AvailableUpdate } from "../lib/updater";
 import type { AppConfig, Credentials } from "../types";
 import { SYNC_INTERVAL_CHOICES } from "../types";
 
@@ -27,13 +27,23 @@ interface Props {
   onSaved: (config: AppConfig) => void;
   onReset: () => void;
   onClose: () => void;
+  // Called when the manual update check finds a pending update, so the
+  // top-level UpdateBanner state can pick it up and render once the user
+  // navigates back out of Settings.
+  onUpdateFound: (update: AvailableUpdate) => void;
 }
 
 // Password fields start blank, with a placeholder telling the user a key is
 // already saved. Typing into a field is the only way to *change* a key; an
 // empty field on save means "leave it alone". This keeps the saved keys out
 // of React state and out of the DOM `value` attribute.
-export function SettingsView({ config, onSaved, onReset, onClose }: Props) {
+export function SettingsView({
+  config,
+  onSaved,
+  onReset,
+  onClose,
+  onUpdateFound,
+}: Props) {
   const [mollieKey, setMollieKey] = useState("");
   const [eoKey, setEoKey] = useState("");
   const [lists, setLists] = useState<EOList[]>([]);
@@ -175,6 +185,11 @@ export function SettingsView({ config, onSaved, onReset, onClose }: Props) {
     try {
       const update = await checkForUpdate();
       if (update) {
+        // Hand the found update up to App.tsx so the banner on the main
+        // view actually renders when the user navigates back. Without
+        // this, Settings just told them an update was available but the
+        // main view had no way to know.
+        onUpdateFound(update);
         setInfo(
           `Update v${update.version} is available — return to the main view to install it.`,
         );
