@@ -1,7 +1,7 @@
 {
   "name": "mollie-octopus-sync",
   "private": true,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Windows desktop app that syncs Mollie payment customers into an EmailOctopus list",
   "license": "MIT",
   "author": "AuditeMarlow",

@@ -7,6 +7,13 @@ entries are derived from [Conventional Commits](https://www.conventionalcommits.
 on each release.
 
 <!-- knope-anchor -->
+## 0.0.6 (2026-05-30)
+
+### Fixes
+
+- read the version from tauri.conf.json instead of hard-coding "v0.1"
+- surface manually-discovered updates to the main-view banner
+
 ## 0.0.5 (2026-05-30)
 
 ### Fixes
