@@ -7,6 +7,12 @@ entries are derived from [Conventional Commits](https://www.conventionalcommits.
 on each release.
 
 <!-- knope-anchor -->
+## 0.0.5 (2026-05-30)
+
+### Fixes
+
+- enable the windows-native keyring backend so writes actually persist
+
 ## 0.0.4 (2026-05-23)
 
 ### Fixes
