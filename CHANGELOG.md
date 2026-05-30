@@ -7,6 +7,12 @@ entries are derived from [Conventional Commits](https://www.conventionalcommits.
 on each release.
 
 <!-- knope-anchor -->
+## 0.0.7 (2026-05-30)
+
+### Fixes
+
+- prettier formatting + softer wording when update check races a build
+
 ## 0.0.6 (2026-05-30)
 
 ### Fixes
