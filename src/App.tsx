@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getVersion } from "@tauri-apps/api/app";
 import { listen } from "@tauri-apps/api/event";
 import { MainView } from "./components/MainView";
 import { SettingsView } from "./components/SettingsView";
@@ -28,6 +29,15 @@ export function App() {
   const [bootError, setBootError] = useState<string | null>(null);
   const [availableUpdate, setAvailableUpdate] =
     useState<AvailableUpdate | null>(null);
+  // Read the version from tauri.conf.json at runtime rather than hard-coding
+  // it. Avoids the subtitle drifting from the actually-installed build, which
+  // is how it ended up reading "v0.1" on every release before v0.0.6.
+  const [appVersion, setAppVersion] = useState<string>("");
+  useEffect(() => {
+    getVersion()
+      .then(setAppVersion)
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -120,7 +130,7 @@ export function App() {
     <div className="app">
       <header className="app__header">
         <h1 className="app__title">Mollie &rarr; EmailOctopus Sync</h1>
-        <span className="app__subtitle">v0.1</span>
+        <span className="app__subtitle">{appVersion && `v${appVersion}`}</span>
       </header>
 
       {bootError && (
