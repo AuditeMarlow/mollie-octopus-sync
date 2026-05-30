@@ -32,7 +32,12 @@ chrono = { version = "0.4", features = ["serde"] }
 # means a non-trivial rewrite we can't fully test from a non-Windows
 # dev machine. Dependabot is told to skip major-version bumps on this
 # dep in .github/dependabot.yml.
-keyring = "3"
+#
+# `windows-native` is REQUIRED — keyring 3.x ships with zero default
+# features, so without this flag the crate is a no-op stub: writes
+# return Ok without persisting anything, reads always come back empty.
+# That's exactly the bug v0.0.4 shipped with.
+keyring = { version = "3", features = ["windows-native"] }
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]

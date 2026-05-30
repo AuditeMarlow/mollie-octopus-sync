@@ -53,7 +53,10 @@ export function useSync(
       return;
     }
     if (!hasCredsRef.current) {
-      if (!opts?.silent) setError("Missing API credentials.");
+      // The renderer's local hasCredentials boolean is false. Either setup
+      // never completed, or App.tsx never received the value from
+      // hasCredentialsIpc() at boot.
+      if (!opts?.silent) setError("Setup hasn't completed — API keys aren't registered yet.");
       return;
     }
     // Pull credentials just-in-time from the OS keyring / file backend, scoped
@@ -63,7 +66,16 @@ export function useSync(
     // the duration of one sync.
     const creds = await getCredentials();
     if (!creds.mollie_api_key || !creds.emailoctopus_api_key) {
-      if (!opts?.silent) setError("Missing API credentials.");
+      // get_credentials succeeded but the OS credential store gave us empty
+      // values back. Indicates a storage issue (e.g. on Windows, the keyring
+      // crate built without `windows-native` silently no-ops every write).
+      if (!opts?.silent)
+        setError(
+          "Couldn't read API keys from the OS credential store. Re-run setup, " +
+            "and if it persists, check Credential Manager (Windows) or the " +
+            "credentials.json file (macOS/Linux dev) for entries under " +
+            "'mollie-octopus-sync'.",
+        );
       return;
     }
     setError(null);
