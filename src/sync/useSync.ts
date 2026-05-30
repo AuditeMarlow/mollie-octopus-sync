@@ -56,7 +56,8 @@ export function useSync(
       // The renderer's local hasCredentials boolean is false. Either setup
       // never completed, or App.tsx never received the value from
       // hasCredentialsIpc() at boot.
-      if (!opts?.silent) setError("Setup hasn't completed — API keys aren't registered yet.");
+      if (!opts?.silent)
+        setError("Setup hasn't completed — API keys aren't registered yet.");
       return;
     }
     // Pull credentials just-in-time from the OS keyring / file backend, scoped

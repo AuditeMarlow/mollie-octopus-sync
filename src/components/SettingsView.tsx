@@ -197,7 +197,21 @@ export function SettingsView({
         setInfo("You're on the latest version.");
       }
     } catch (e) {
-      setError(formatError(e));
+      // The updater plugin throws "Could not fetch a valid release JSON
+      // from the remote" specifically during the window between knope
+      // tagging a release and build.yml finishing — the new GitHub
+      // release exists but its latest.json asset isn't uploaded yet, so
+      // the redirect from `releases/latest/download/latest.json` lands
+      // on something that doesn't parse. Soft-land that so users don't
+      // think the app is broken when a build is mid-flight.
+      const msg = formatError(e);
+      if (/valid release JSON/i.test(msg)) {
+        setInfo(
+          "A new release is currently being built. Try again in a few minutes.",
+        );
+      } else {
+        setError(msg);
+      }
     } finally {
       setBusy(false);
     }
